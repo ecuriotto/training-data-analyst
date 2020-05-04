@@ -80,17 +80,12 @@ private final KeyFactory keyFactory = datastore.newKeyFactory().setKind(ENTITY_K
     public List<Question> getAllQuestions(String quiz){
 
 
-       Query<Entity> questionQuery = Query.newEntityQueryBuilder().setKind(ENTITY_KIND).setFilter(StructuredQuery.PropertyFilter.eq(
-               Question.QUIZ, quiz)).build();
+       Query<Entity> questionQuery = Query.newEntityQueryBuilder().setKind(ENTITY_KIND).setFilter(StructuredQuery.PropertyFilter.eq(Question.QUIZ, quiz)).build();
 
 
  // 10: Execute the query
         List<Question> questions = new ArrayList<>();
         QueryResults<Entity> queryResults = datastore.run(questionQuery);
-        queryResults.forEachRemaining(s ->{
-
-        });
-
         questions = buildQuestions(queryResults);
         return questions;
     }
