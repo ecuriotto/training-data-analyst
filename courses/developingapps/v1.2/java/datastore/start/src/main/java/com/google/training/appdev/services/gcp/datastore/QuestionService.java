@@ -15,14 +15,10 @@
  */
 package com.google.training.appdev.services.gcp.datastore;
 
-// TODO: Import the com.google.cloud.datastore.* package
-
-
-
-// END TODO
-
+import com.google.cloud.datastore.*;
+import com.google.cloud.datastore.DatastoreOptions;
+import com.google.datastore.v1.Filter;
 import com.google.training.appdev.services.gcp.domain.Question;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,73 +28,58 @@ import org.springframework.stereotype.Service;
 @Service
 public class QuestionService {
 
-// TODO: Create a Datastore client object, datastore
+// 1: Create a Datastore client object, datastore
 // The DatastoreOptions class has a getDefaultInstance()
 // static method.
 // Use the getService() method of the DatastoreOptions
 // object to get the Datastore client
 
 
-// END TODO
+private Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
-// TODO: Declare a static final String named kind
+
+// 2: Declare a static final String named kind
 //The Datastore key is the equivalent of a primary key in a // relational database.
 // There are two main ways of writing a key:
 // 1. Specify the kind, and let Datastore generate a unique //    numeric id
 // 2. Specify the kind and a unique string id
+private static final String ENTITY_KIND = "Question";
 
 
 
-// END TODO
 
-// TODO: Create a KeyFactory for Question entities
+// 3: Create a KeyFactory for Question entities
+private final KeyFactory keyFactory = datastore.newKeyFactory().setKind(ENTITY_KIND);
 
-
-// END TODO
-
-// The createQuestion(Question question) method 
+// The createQuestion(Question question) method
 // is passed a Question object using data from the form
 // Extract the form data and add it to Datastore
 
-// TODO: Modify return type to Key
+// 4: Modify return type to Key
 
-    public String createQuestion(Question question) {
-
-// END TODO
-
-// TODO: Declare the entity key, 
+    public Key createQuestion(Question question) {
+// 5: Declare the entity key,
 // with a Datastore allocated id
+         Key key =datastore.allocateId(keyFactory.newKey());
+        Entity questionEntity = Entity.newBuilder(key)
+                .set(Question.QUIZ,question.getQuiz())
+                .set(Question.AUTHOR, question.getAuthor())
+                .set(Question.ANSWER_ONE, question.getAnswerOne())
+                .set(Question.ANSWER_TWO, question.getAnswerTwo())
+                .set(Question.ANSWER_THREE, question.getAnswerThree())
+                .set(Question.ANSWER_FOUR, question.getAnswerFour())
+                .build();
+        // 6: Save the entity
+        datastore.put(questionEntity);
 
-
-// END TODO
- 
-// TODO: Declare the entity object, with the key and data
-// The entity's members are set using the Entity.Builder. 
-// This has a set method for property names and values
-// Values are retrieved from the Domain object
-
-
-
-
-
-
-// END TODO
-
-// TODO: Save the entity
-
-// END TODO
-
-// TODO: Return the key
-
-        return "Replace this string with the key";
-
-// END TODO
+        // 7: Return the key
+        return key;
     }
 
     public List<Question> getAllQuestions(String quiz){
 
-// TODO: Remove this code
-
+// 8: Remove this code
+/*
         List<Question> questions = new ArrayList<>();
         Question dummy = new Question.Builder()
                 .withQuiz("gcp")
@@ -114,38 +95,33 @@ public class QuestionService {
         questions.add(dummy);
 
         return questions;
+*/
 
-// END TODO
 
- // TODO: Create the query
+
+ // 9: Create the query
  // The Query class has a static newEntityQueryBuilder() 
  // method that allows you to specify the kind(s) of 
  // entities to be retrieved.
  // The query can be customized to filter the Question 
  // entities for one quiz.
 
-
- // END TODO
-
- // TODO: Execute the query
- // The datastore.run(query) method returns an iterator
- // for entities
+       Query questionQuery = Query.newEntityQueryBuilder().setKind(ENTITY_KIND).build();
 
 
- // END TODO
+ // 10: Execute the query
+        List<Question> questions = new ArrayList<>();
+        QueryResults<Entity> queryResults = datastore.run(questionQuery);
+        queryResults.forEachRemaining(s ->{
 
- // TODO: Return the transformed results
- // Use the buildQuestions(entities) method to convert
- // from Datastore entities to domain objects
+        });
 
-
-
- // END TODO
-
+        questions = buildQuestions(queryResults);
+        return questions;
     }
 
 
-/* TODO: Uncomment this block
+// 11: Uncomment this block
 
     private List<Question> buildQuestions(Iterator<Entity> entities){
         List<Question> questions = new ArrayList<>();
@@ -167,5 +143,5 @@ public class QuestionService {
                 .build();
     }
 
-*/
+
 }
