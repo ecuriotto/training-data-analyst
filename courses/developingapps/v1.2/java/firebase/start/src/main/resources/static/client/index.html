@@ -34,10 +34,32 @@
     </div>
 
 
-    
 
-    
 
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyCU7gkX3sftSeR41NQXnsA23K7Rq3Vvat0",
+        authDomain: "qwiklabs-gcp-02-78204be229a9.firebaseapp.com",
+        databaseURL: "https://qwiklabs-gcp-02-78204be229a9.firebaseio.com",
+        projectId: "qwiklabs-gcp-02-78204be229a9",
+        storageBucket: "qwiklabs-gcp-02-78204be229a9.appspot.com",
+        messagingSenderId: "568055552876",
+        appId: "1:568055552876:web:acd1f0a000f121fa52f149",
+        measurementId: "G-JQ3QKTKTQM"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
     <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.js'></script>
     <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-route.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.js'></script>
