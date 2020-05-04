@@ -17,7 +17,6 @@ package com.google.training.appdev.services.gcp.datastore;
 
 import com.google.cloud.datastore.*;
 import com.google.cloud.datastore.DatastoreOptions;
-import com.google.datastore.v1.Filter;
 import com.google.training.appdev.services.gcp.domain.Question;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,10 +63,12 @@ private final KeyFactory keyFactory = datastore.newKeyFactory().setKind(ENTITY_K
         Entity questionEntity = Entity.newBuilder(key)
                 .set(Question.QUIZ,question.getQuiz())
                 .set(Question.AUTHOR, question.getAuthor())
+                .set(Question.TITLE, question.getTitle())
                 .set(Question.ANSWER_ONE, question.getAnswerOne())
                 .set(Question.ANSWER_TWO, question.getAnswerTwo())
                 .set(Question.ANSWER_THREE, question.getAnswerThree())
                 .set(Question.ANSWER_FOUR, question.getAnswerFour())
+                .set(Question.CORRECT_ANSWER, question.getCorrectAnswer())
                 .build();
         // 6: Save the entity
         datastore.put(questionEntity);
@@ -78,35 +79,9 @@ private final KeyFactory keyFactory = datastore.newKeyFactory().setKind(ENTITY_K
 
     public List<Question> getAllQuestions(String quiz){
 
-// 8: Remove this code
-/*
-        List<Question> questions = new ArrayList<>();
-        Question dummy = new Question.Builder()
-                .withQuiz("gcp")
-                .withAuthor("Dummy Author")
-                .withTitle("Dummy Title")
-                .withAnswerOne("Dummy Answer One")
-                .withAnswerTwo("Dummy Answer Two")
-                .withAnswerThree("Dummy Answer Three")
-                .withAnswerFour("Dummy Answer Four")
-                .withCorrectAnswer(1)
-                .withId(-1)
-                .build();
-        questions.add(dummy);
 
-        return questions;
-*/
-
-
-
- // 9: Create the query
- // The Query class has a static newEntityQueryBuilder() 
- // method that allows you to specify the kind(s) of 
- // entities to be retrieved.
- // The query can be customized to filter the Question 
- // entities for one quiz.
-
-       Query questionQuery = Query.newEntityQueryBuilder().setKind(ENTITY_KIND).build();
+       Query<Entity> questionQuery = Query.newEntityQueryBuilder().setKind(ENTITY_KIND).setFilter(StructuredQuery.PropertyFilter.eq(
+               Question.QUIZ, quiz)).build();
 
 
  // 10: Execute the query
