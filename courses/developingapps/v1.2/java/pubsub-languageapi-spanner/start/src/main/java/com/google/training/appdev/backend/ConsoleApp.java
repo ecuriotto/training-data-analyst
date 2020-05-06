@@ -45,11 +45,13 @@ public class ConsoleApp {
     TopicName topic = TopicName.create(projectId, "feedback");
 
 
-      SubscriptionName subscription = SubscriptionName.create(projectId,"worker1-subscription");
+      //SubscriptionName subscription = SubscriptionName.create(projectId,"worker1-subscription");
+      SubscriptionName subscription = SubscriptionName.create(projectId,"worker2-subscription");
       try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
           subscriptionAdminClient.createSubscription(subscription, topic, PushConfig.getDefaultInstance(), 0);
       }
 
+      LanguageService languageService = LanguageService.create();
     // The message receiver processes Pub/Sub subscription messages
     MessageReceiver receiver = new MessageReceiver() {
         // Override the receiveMessage(...) method
@@ -66,17 +68,9 @@ public class ConsoleApp {
                 Feedback feedback = mapper.readValue(feedbackString, Feedback.class);
                 System.out.println("Feedback received: "  + feedback);
 
-                // TODO: Use the Natural Language API to analyze sentiment
-
-                
-
-                // END TODO
-
-                // TODO: Set the feedback object sentiment score
-
-                
-
-                // END TODO
+                float sentimentScore = languageService.analyzeSentiment(feedback.getFeedback());
+                feedback.setSentimentScore(sentimentScore);
+                System.out.println("Score is: " + sentimentScore);
 
                 // TODO: Insert the feedback into Cloud Spanner
 

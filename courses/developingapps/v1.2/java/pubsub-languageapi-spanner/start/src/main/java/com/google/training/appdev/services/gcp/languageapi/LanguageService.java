@@ -28,12 +28,16 @@ public class LanguageService {
     }
 
     public float analyzeSentiment(String feedback)throws Exception{
-        // TODO: Create the LanguageServiceClient object
-
-        
-            // TODO: Create a new Document object using the builder
-            // Set the content and type
-
+        try (LanguageServiceClient language = LanguageServiceClient.create()) {
+            Document doc = Document.newBuilder()
+                    .setContent(feedback)
+                    .setType(Document.Type.PLAIN_TEXT)
+                    .build();
+            Sentiment sentiment = language
+                    .analyzeSentiment(doc)
+                    .getDocumentSentiment();
+            return sentiment.getScore();
+        }
             
 
 
