@@ -38,26 +38,6 @@ public class LanguageService {
                     .getDocumentSentiment();
             return sentiment.getScore();
         }
-            
-
-
-            // END TODO
-
-            // TODO: Use the client to analyze the sentiment of the feedback
-
-            
-
-            // END TODO
-
-            // TODO: Return the sentiment score instead of 0.0f;
-
-            return 0.0f;
-
-            // END TODO
-        
-
-        // END TODO
-
     }
     private LanguageService(){ }
 }
