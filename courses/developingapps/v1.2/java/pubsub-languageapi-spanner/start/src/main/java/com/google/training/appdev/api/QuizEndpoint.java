@@ -40,13 +40,8 @@ public class QuizEndpoint {
 
     @Autowired
     private QuestionService questionService;
-
-    // TODO: Declare the publishService
-
-    
-
-
-    // END TODO
+    @Autowired
+    private PublishService publishService;
 
 
     @GetMapping(value = "{quiz}")
@@ -71,14 +66,7 @@ public class QuizEndpoint {
     public ResponseEntity<ObjectNode> processFeedback(@PathVariable String quiz, @RequestBody Feedback feedback)throws Exception{
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root = mapper.createObjectNode();
-
-
-        // TODO: Publish the feedback to Pub/Sub
-
-        
-
-        // END TODO
-
+        publishService.publishFeedback(feedback);
         root.put("data","Feedback received");
         return new ResponseEntity<ObjectNode>(root,HttpStatus.OK);
 

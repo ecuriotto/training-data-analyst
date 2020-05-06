@@ -81,7 +81,7 @@ private static Storage storage = StorageOptions
     // TODO: Cloud Storage public URLs are in the form:
     // https://storage.googleapis.com/[BUCKET]/[OBJECT]
     // Use String concatentation to create return the URL
-        
+
     return "https://storage-download.googleapis.com/" + bucketName+ "/" +fileName;
 
     // END TODO
