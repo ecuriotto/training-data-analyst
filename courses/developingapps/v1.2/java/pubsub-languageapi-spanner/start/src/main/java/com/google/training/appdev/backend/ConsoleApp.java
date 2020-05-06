@@ -46,12 +46,13 @@ public class ConsoleApp {
 
 
       //SubscriptionName subscription = SubscriptionName.create(projectId,"worker1-subscription");
-      SubscriptionName subscription = SubscriptionName.create(projectId,"worker2-subscription");
+      SubscriptionName subscription = SubscriptionName.create(projectId,"worker4-subscription");
       try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
           subscriptionAdminClient.createSubscription(subscription, topic, PushConfig.getDefaultInstance(), 0);
       }
 
       LanguageService languageService = LanguageService.create();
+      SpannerService spannerService = SpannerService.create();
     // The message receiver processes Pub/Sub subscription messages
     MessageReceiver receiver = new MessageReceiver() {
         // Override the receiveMessage(...) method
@@ -73,7 +74,8 @@ public class ConsoleApp {
                 System.out.println("Score is: " + sentimentScore);
 
                 // TODO: Insert the feedback into Cloud Spanner
-
+                spannerService.insertFeedback(feedback);
+                System.out.println("Feedback saved");
                 
 
                 // END TODO
