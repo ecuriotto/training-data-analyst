@@ -44,37 +44,11 @@ public class ConsoleApp {
     // Notice that the code to create the topic is the same as in the publisher
     TopicName topic = TopicName.create(projectId, "feedback");
 
-    // TODO: Create the languageService
 
-    
-
-    // END TODO
-
-    // TODO: Create the spannerService
-
-    
-
-    // END TODO
-
-    // TODO: Create the Pub/Sub subscription name
-
-    
-
-    // END TODO
-    
-    // TODO: Create the subscriptionAdminClient
-
-    
-
-      // TODO: create the Pub/Sub subscription using the subscription name and topic
-
-      
-
-      // END TODO
-      
-    
-
-    // END TODO
+      SubscriptionName subscription = SubscriptionName.create(projectId,"worker1-subscription");
+      try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
+          subscriptionAdminClient.createSubscription(subscription, topic, PushConfig.getDefaultInstance(), 0);
+      }
 
     // The message receiver processes Pub/Sub subscription messages
     MessageReceiver receiver = new MessageReceiver() {
@@ -83,25 +57,14 @@ public class ConsoleApp {
         public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
             // TODO: Extract the message data as a JSON String
 
-            
-
-            // END TODO
-
-            // TODO: Ack the message
-
-            
-
-            // END TODO
+            String feedbackString = message.getData().toStringUtf8();
+            consumer.ack();
 
             try {
                 // Object mapper deserializes the JSON String
                 ObjectMapper mapper = new ObjectMapper();
-
-                // TODO: Deserialize the JSON String representing the feedback
-
-                
-
-                // END TODO
+                Feedback feedback = mapper.readValue(feedbackString, Feedback.class);
+                System.out.println("Feedback received: "  + feedback);
 
                 // TODO: Use the Natural Language API to analyze sentiment
 
@@ -127,59 +90,42 @@ public class ConsoleApp {
         }
     };
 
-    // TODO: Declare a subscriber
-
-    
-
-    // END TODO
+      Subscriber subscriber = null;
 
     try {
 
-        // TODO: Initialize the subscriber using its default builder
+        // its default builder
         // with a subscription and receiver
 
-        
+        subscriber = Subscriber.defaultBuilder(subscription, receiver).build();
+        subscriber.addListener(
+                new Subscriber.Listener() {
+                    @Override
+                    public void failed(
+                            Subscriber.State from,
+                            Throwable failure) {
+                        System.err.println(failure);
+                    }
+                },
+                MoreExecutors.directExecutor());
 
-        // END TODO
-
-        // TODO: Add a listener to the subscriber
-
-        
-        
-
-
-
-
-        // END TODO
-
-        // TODO: Start subscribing
-
-        
-        
-
-        // END TODO
+        subscriber.startAsync().awaitRunning();
 
         System.out.println("Started. Press any key to quit and remove subscription");
 
         System.in.read();
 
     } finally {
-        
-        // TODO: Stop subscribing
 
-        
+        if (subscriber != null) {
+            subscriber.stopAsync().awaitTerminated();
+        }
 
-        // END TODO
-        
-
-        // TODO: Delete the subscription
-
-        
-        
+        try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()) {
+            subscriptionAdminClient.deleteSubscription(subscription);
+        }
 
 
-
-        // END TODO
     }
     }
 
